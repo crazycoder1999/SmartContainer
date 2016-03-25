@@ -1,0 +1,44 @@
+﻿<Page
+    x:Class="App1.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:App1"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="#FF747BA4">
+        <Button x:Name="confirmButton" Content="Confirm" HorizontalAlignment="Center" Margin="20,0,20,8" VerticalAlignment="Bottom" Height="43" Click="ConfirmButton_Click" Width="130"/>
+        <ScrollViewer Margin="10,10,10,100">
+            <Grid HorizontalAlignment="Center" Height="679" VerticalAlignment="Top" Width="350">
+                <Image Height="120" Margin="10,5,0,0" VerticalAlignment="Top" Source="Assets/containers.jpg" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" IsTapEnabled="False" HorizontalAlignment="Left" Width="120"/>
+                <TextBox x:Name="wifiSSIDText" Margin="40,281,40,0" TextWrapping="Wrap" Text="" PlaceholderText="&lt;Insert Wifi SSID here&gt;" InputScope="Default" Height="35" VerticalAlignment="Top"/>
+                <PasswordBox x:Name="wifiPwdText" Margin="40,351,40,0" VerticalAlignment="Top" PlaceholderText="&lt;Insert Wifi Password Here&gt;" Password="" />
+                <TextBlock HorizontalAlignment="Left" Margin="65,256,0,0" TextWrapping="Wrap" Text="Wifi SSID" VerticalAlignment="Top" Width="215" FontWeight="Bold"/>
+                <TextBlock HorizontalAlignment="Left" Margin="65,326,0,0" TextWrapping="Wrap" Text="Wifi Password" VerticalAlignment="Top" Width="215" FontWeight="Bold"/>
+                <TextBox x:Name="labelText" HorizontalAlignment="Center" Margin="40,440,39,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" PlaceholderText="&lt;Insert the label here&gt;" Width="268"/>
+                <TextBlock x:Name="descriptionLabel" HorizontalAlignment="Left" Margin="69,392,0,0" TextWrapping="Wrap" Text="Insert the label to display on the container:" VerticalAlignment="Top" SelectionChanged="TextBlock_SelectionChanged" Width="213" Height="53" FontWeight="Bold"/>
+                <TextBlock x:Name="appDescriptionText" Margin="125,27,5,0" TextWrapping="Wrap" Text="Use this app to configure your Smart Container!" VerticalAlignment="Top" FontSize="18.667" FontWeight="Bold" TextAlignment="Center" Width="150"/>
+                <TextBlock Margin="10,120,10,0" TextWrapping="Wrap" VerticalAlignment="Top" MaxLines="6" Height="120" SelectionChanged="TextBlock_SelectionChanged_1">
+                	<Run Text="Instructions:"/>
+                	<LineBreak/>
+                	<Run Text="- Disconnect the container"/>
+                	<LineBreak/>
+                	<Run Text="- Empty the container"/>
+                	<LineBreak/>
+                	<Run Text="- Connect the container"/>
+                	<LineBreak/>
+                	<Run Text="- Configure the following formation and press Confirm!"/>
+                	<LineBreak/>
+                	<Run Text=""/>
+                </TextBlock>
+                <TextBlock Margin="67,481,0,0" TextWrapping="Wrap" Text="Location:" VerticalAlignment="Top" HorizontalAlignment="Left" Width="213" Height="24" FontWeight="Bold"/>
+                <TextBox x:Name="positionText" Margin="40,508,40,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" PlaceholderText="&lt;Insert the Position of the container here&gt;" HorizontalAlignment="Center" Width="270"/>
+                <TextBlock Margin="67,545,0,0" TextWrapping="Wrap" Text="Threshold (grams):" VerticalAlignment="Top" HorizontalAlignment="Left" Width="213" Height="24" FontWeight="Bold"/>
+                <TextBox x:Name="thresholdText" HorizontalAlignment="Center" Margin="40,576,40,-6" TextWrapping="Wrap" Text="" VerticalAlignment="Top" PlaceholderText="&lt;Insert the Threshold of the container here&gt;" Width="270"/>
+
+            </Grid>
+        </ScrollViewer>
+        <ProgressBar x:Name="progressBar" HorizontalAlignment="Center" Margin="10,0,10,63" VerticalAlignment="Bottom" Width="250" Height="10" SmallChange="5" LargeChange="10"/>
+    </Grid>
+</Page>
