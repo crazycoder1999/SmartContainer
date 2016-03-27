@@ -23,8 +23,8 @@ Everywhere you can replace a simple container with a smart container:
 - house: keep track of items or food to buy. What should I have to buy for launch today? check the smart containers page!
 
 ## Hardware / Material List
-- a load cell in the bottom
-- a 2 line display: for content information
+- a load cell with HX711 driver
+- a 2 line display LCD / HD44780: for content information
 - a light or a led for visual notification
 - a lipo battery (optional, you can leave it plugged to 5V)
 - Arduino MKR1000
@@ -33,6 +33,7 @@ Everywhere you can replace a simple container with a smart container:
 
 ### Arduino
 Some configuration settings are hard-coded like server address and port.
+The code is based on standard firmata example: I tried to reduce it to the essential, but I had problems with the UWA..that's why I didn't changed a lot.
 The project is tested with the MKR1000: maybe it works also with Yun and other wifi-arduinos.
 The circuit is in the Arduino folder of this repository.
 The code:
