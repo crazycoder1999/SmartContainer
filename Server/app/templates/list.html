@@ -1,0 +1,114 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ title }} - Arduino MKR1000</title>
+    <link rel="stylesheet" href="static/css/bootstrap.css" />
+    <link rel="stylesheet" href="static/css/bootstrap-theme.css" />
+  </head>
+  <body>
+
+
+
+	<div class="panel panel-default">
+	  <!-- Default panel contents -->
+	  <div class="panel-heading">Welcome to SPC List!</div>
+
+  <!-- Table -->
+		<table class="table">
+    			<tr>
+				<th>Label</th>
+				<th>Position</th>
+				<th>Weight</th>
+				<th>Threshold</th>
+				<th>Mac Address</th> <!--Last Update -->
+				<th>Options</th>
+			</tr>
+			{% for it in items %}
+			<tr>
+				<td>{{ it.label }}</td>
+				<td>{{ it.position }} </td>
+				<td>{{ it.weight }} g</td>
+				<td>{{ it.threshold }} g</td>
+				<td>{{ it.macAddr }}</td>
+				<td>
+				<div class="dropdown">
+					<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Configure
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu">
+						<li><a href="#" onclick="updateLabel('{{ it.macAddr }}', '{{ it.label }}' );">Label</a></li>
+						<li><a href="#" onclick="updatePosition('{{ it.macAddr }}', '{{ it.position }}' );">Position</a></li>
+						<li><a href="#" onclick="updateThreshold('{{ it.macAddr }}', '{{ it.threshold }}' );">Threshold</a></li>
+
+     <li class="divider"></li>
+
+						<li><a href="#" onclick="delContainer('{{ it.macAddr }}');">Delete</a></li>
+     <!-- <li class="divider"></li>
+      <li><a href="#">About Us</a></li> -->
+					</ul>
+				</div>
+
+</td>
+			</tr>
+			{% endfor %}
+			
+		</table>
+	  </div>
+	</div>
+    <script src="static/js/jquery.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+<script>
+	function updateLabel(macAddr,current){
+		var newLabel = prompt("Update label for "+macAddr , ""+current);
+		if(newLabel != null) {
+			$.get("/setLabel?macAddr="+macAddr+"&label="+newLabel,function (data) {
+				if( parseInt(data) !== 1 )
+					alert("failed updating..."+data);
+				location.reload();
+			});
+		}
+	}
+
+	function updatePosition(macAddr,current){
+		var newPosition = prompt("Update position for "+macAddr , ""+current);
+		if(newPosition != null) {
+			$.get("/setPosition?macAddr="+macAddr+"&position="+newPosition,function (data) {
+				if( parseInt(data) !== 1 )
+					alert("failed updating..."+data);
+				location.reload();
+			});
+
+		}
+	}
+
+	function updateThreshold(macAddr,current){
+		var newThreshold = prompt("Update threshold (grams) for "+macAddr , ""+current);
+		//TODO missing a control for integer value
+		if(newThreshold != null) {
+			$.get("/setThreshold?macAddr="+macAddr+"&threshold="+newThreshold,function (data) {
+				if( parseInt(data) !== 1 )
+					alert("failed updating..."+data);
+				location.reload();
+			});
+
+		}
+	}
+
+	function delContainer(macAddr){
+		var goOn = confirm("Delete "+macAddr+"?");
+		if( goOn != false ) {
+			$.get("/delContainer?macAddr="+macAddr,function (data) {
+				if( parseInt(data) !== 1 )
+					alert("failed updating..."+data);
+				location.reload();
+			});
+		}
+	}
+
+</script>
+  </body>
+</html>
+
