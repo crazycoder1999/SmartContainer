@@ -1,17 +1,35 @@
 /*
-* More info on:
-* https://github.com/crazycoder1999/SmartContainer
+  Firmata is a generic protocol for communicating with microcontrollers
+  from software on a host computer. It is intended to work with
+  any host computer software package.
+
+  To download a host software package, please clink on the following link
+  to open the list of Firmata client libraries your default browser.
+
+  https://github.com/firmata/arduino#firmata-client-libraries
+
+  Copyright (C) 2006-2008 Hans-Christoph Steiner.  All rights reserved.
+  Copyright (C) 2010-2011 Paul Stoffregen.  All rights reserved.
+  Copyright (C) 2009 Shigeru Kobayashi.  All rights reserved.
+  Copyright (C) 2009-2016 Jeff Hoefs.  All rights reserved.
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
+
+  See file LICENSE.txt for further informations on licensing terms.
+
+  Last updated by Jeff Hoefs: January 10th, 2016
 */
 
 #include <Servo.h>
 #include <Wire.h>
 #include <Firmata.h>
 #include <LiquidCrystal.h>
-#include <SPI.h>
-
 #include "HX711.h"
 #include <WiFi101.h>
-
+#include <SPI.h>
 #define I2C_WRITE                   B00000000
 #define I2C_READ                    B00001000
 #define I2C_READ_CONTINUOUSLY       B00010000
@@ -73,21 +91,20 @@ byte servoPinMap[TOTAL_PINS];
 byte detachedServos[MAX_SERVOS];
 byte detachedServoCount = 0;
 byte servoCount = 0;
-//END FIRMATA LEGACY VARIABLES!
-
 
 boolean isResetting = false;
 boolean wifiIsReady = false;
 
 /* VARIABLE FOR SENSOR MANAGEMENT and WIFI*/
-String wifi_ssid_str;   //TODO NOTNOW // the name of your network
-String wifi_pwd_str; //TODO NOTNOW //the wifi password of the network NOT WORKING RIGHT NOW!
+String wifi_ssid_str;   // the name of your network
+String wifi_pwd_str; //the wifi password of the network NOT WORKING RIGHT NOW!
 int wifi_status = WL_IDLE_STATUS;     // the Wifi radio's status
 
-const int  warningLedPin = 5; //TODO configurare led pin
+const int  warningLedPin = 5; 
 String label; //current label
-char server[] = "192.168.0.5"; //it depends on the server!!
-int serverPort = 5000;//server port!
+char server[] = "192.168.0.4";
+  
+int serverPort = 5000;
 HX711 scale(A0, A1);
 LiquidCrystal lcd(12, 11, 9,8,7,6);
 String macAddress;
@@ -103,7 +120,6 @@ boolean initDone = false;
 const float TOLLERANCE = 10.0f;
 /**/
 
-//legacy firmata code
 /* utility functions */
 void wireWrite(byte data)
 {
@@ -114,7 +130,6 @@ void wireWrite(byte data)
 #endif
 }
 
-//legacy firmata code
 byte wireRead(void)
 {
 #if ARDUINO >= 100
@@ -128,7 +143,6 @@ byte wireRead(void)
  * FUNCTIONS
  *============================================================================*/
 
-//legacy firmata code
 void attachServo(byte pin, int minPulse, int maxPulse)
 {
   if (servoCount < MAX_SERVOS) {
@@ -150,7 +164,6 @@ void attachServo(byte pin, int minPulse, int maxPulse)
   }
 }
 
-//legacy firmata code
 void detachServo(byte pin)
 {
   servos[servoPinMap[pin]].detach();
@@ -168,7 +181,6 @@ void detachServo(byte pin)
   servoPinMap[pin] = 255;
 }
 
-//legacy firmata code
 void readAndReportData(byte address, int theRegister, byte numBytes, byte stopTX) {
   // allow I2C requests that don't require a register read
   // for example, some devices using an interrupt pin to signify new data available
@@ -206,7 +218,6 @@ void readAndReportData(byte address, int theRegister, byte numBytes, byte stopTX
   Firmata.sendSysex(SYSEX_I2C_REPLY, numBytes + 2, i2cRxData);
 }
 
-//legacy firmata code
 void outputPort(byte portNumber, byte portValue, byte forceSend)
 {
   // pins not configured as INPUT are cleared to zeros
@@ -218,7 +229,6 @@ void outputPort(byte portNumber, byte portValue, byte forceSend)
   }
 }
 
-//legacy firmata code
 /* -----------------------------------------------------------------------------
  * check all the active digital inputs for change of state, then add any events
  * to the Serial output queue using Serial.print() */
@@ -245,7 +255,6 @@ void checkDigitalInputs(void)
   if (TOTAL_PORTS > 15 && reportPINs[15]) outputPort(15, readPort(15, portConfigInputs[15]), false);
 }
 
-//legacy firmata code
 // -----------------------------------------------------------------------------
 /* sets the pin mode to the correct state and sets the relevant bits in the
  * two bit-arrays that track Digital I/O and PWM status
@@ -348,7 +357,6 @@ void setPinModeCallback(byte pin, int mode)
   // TODO: save status to EEPROM here, if changed
 }
 
-//legacy firmata code
 /*
  * Sets the value of an individual pin. Useful if you want to set a pin value but
  * are not tracking the digital port state.
@@ -365,7 +373,6 @@ void setPinValueCallback(byte pin, int value)
   }
 }
 
-//legacy firmata code
 void analogWriteCallback(byte pin, int value)
 {
   if (pin < TOTAL_PINS) {
@@ -384,7 +391,6 @@ void analogWriteCallback(byte pin, int value)
   }
 }
 
-//legacy firmata code
 void digitalWriteCallback(byte port, int value)
 {
   byte pin, lastPin, pinValue, mask = 1, pinWriteMask = 0;
@@ -445,7 +451,6 @@ void reportAnalogCallback(byte analogPin, int value)
   // TODO: save status to EEPROM here, if changed
 }
 
-//legacy firmata code
 void reportDigitalCallback(byte port, int value)
 {
   if (port < TOTAL_PORTS) {
@@ -467,7 +472,6 @@ void reportDigitalCallback(byte port, int value)
  * SYSEX-BASED commands
  *============================================================================*/
 
-//legacy firmata code + custom COMMANDS!
 void sysexCallback(byte command, byte argc, byte *argv)
 {
   byte mode;
@@ -482,7 +486,7 @@ void sysexCallback(byte command, byte argc, byte *argv)
   Firmata.write(END_SYSEX);
   switch (command) {
     
-    case UPDATEME: //CUSTOM CALLBACK
+    case UPDATEME:
 
       if( argc == 50 ) //verify we received the whole message
       {  
@@ -490,9 +494,10 @@ void sysexCallback(byte command, byte argc, byte *argv)
         char s[mac.length()+1];
         mac.toCharArray(s,mac.length());
         Firmata.sendString(s);
+       // TODO! UNSAFE! more than 50 characters can cause crashes!
         String reconstruct = "";
         int param = 1;
-        for(unsigned int i=0;i<50;i++){ //parsing parameters..TODO improve checks/controls!
+        for(unsigned int i=0;i<50;i++){
           if(argv[i]==';'){
             param ++;
           } else if(param==1){
@@ -721,8 +726,6 @@ void sysexCallback(byte command, byte argc, byte *argv)
   }
 }
 
-
-//legacy firmata code
 void enableI2CPins()
 {
   byte i;
@@ -740,7 +743,6 @@ void enableI2CPins()
   Wire.begin();
 }
 
-//legacy firmata code
 /* disable the i2c pins so they can be used for other functions */
 void disableI2CPins() {
   isI2CEnabled = false;
@@ -751,7 +753,7 @@ void disableI2CPins() {
 /*==============================================================================
  * SETUP()
  *============================================================================*/
-//legacy firmata code
+
 void systemResetCallback()
 {
   isResetting = true;
@@ -797,24 +799,20 @@ void systemResetCallback()
 
 void setup() {
   label = String("");  
-  setupSensors();
+  setupSensors(false);
   setupFirmata();
 }
 
-/*
-* setup sensors and lcd
-*/
-void setupSensors(){
+void setupSensors(boolean all){
   pinMode(warningLedPin, OUTPUT); 
   setupLCD();
-  messageToLCD("Initializing..","Weight Sensor");
-  setupWeightSensor();
-  messageToLCD("Completed..","Weight Sensor");
+  if(!all){
+    messageToLCD("Initializing..","Weight Sensor");
+    setupWeightSensor();
+    messageToLCD("Completed..","Weight Sensor");
+  }
 }
 
-/*
-* Setup Firmata and prepare for USB comunication
-*/
 void setupFirmata()
 {
   messageToLCD("Preparing","USB Config.");
@@ -825,11 +823,17 @@ void setupFirmata()
   Firmata.attach(START_SYSEX, sysexCallback);
   Firmata.attach(SYSTEM_RESET, systemResetCallback);
 
+  // to use a port other than Serial, such as Serial1 on an Arduino Leonardo or Mega,
+  // Call begin(baud) on the alternate serial port and pass it to Firmata to begin like this:
+  // Serial1.begin(57600);
+  // Firmata.begin(Serial1);
+  // However do not do this if you are using SERIAL_MESSAGE
+
   Firmata.begin(57600);
   readMacAddress();
   messageToLCD("Waiting..","USB Config");
   while (!Serial) {
-    ;
+    ; // wait for serial port to connect. Needed for ATmega32u4-based boards and Arduino 101
   }
   messageToLCD("Software","Ready");
   systemResetCallback();  // reset to default config
@@ -839,20 +843,28 @@ void setupLCD() {
   lcd.begin(16, 2);
 }
 
-/*
-* Code for configure the HX711
-*/
+
+
 void setupWeightSensor() {
-	scale.read();     
-	scale.read_average(20);
-	scale.get_value(5); 
-	scale.get_units(5);
-	scale.set_scale(2280.f);                     
-  	scale.tare(); 
-	scale.read();
-	scale.read_average(20); 
-	scale.get_value(5);  
-	scale.get_units(5);   
+
+scale.read();     // print a raw reading from the ADC
+scale.read_average(20);   // print the average of 20 readings from the ADC
+
+scale.get_value(5);   // print the average of 5 readings from the ADC minus the tare weight (not set yet)
+
+scale.get_units(5);  
+scale.set_scale(-2280.f);   
+                      // this value is obtained by calibrating the scale with known weights; see the README for details
+delay(500);
+scale.tare();               // reset the scale to 0
+delay(500);
+scale.read();                 // print a raw reading from the ADC
+
+scale.read_average(20);       // print the average of 20 readings from the ADC
+
+scale.get_value(5);   // print the average of 5 readings from the ADC minus the tare weight, set with tare()
+scale.get_units(5);        // print the average of 5 readings from the ADC minus tare weight, divided 
+
 }
 /*==============================================================================
  * LOOP()
@@ -866,49 +878,50 @@ void loop(){
   }
 }
 
-/*
-* main code after setup process
-*/
 void loopSensors() {
-  if(!wifiIsReady) { //if not ready
-    if(setupWifi()==1) { // setup wifi and if ready, disable firmata, setup sensors
-	wifiIsReady = true;
-	messageToLCD("SPC","Starting!");
+  if(!wifiIsReady) {
+    if(setupWifi()==1) {
+      wifiIsReady = true;
+      messageToLCD("SPC","Starting!");
         Firmata.detach(ANALOG_MESSAGE);
         Firmata.detach(DIGITAL_MESSAGE);
         Firmata.detach(START_SYSEX);
         Firmata.detach(SYSTEM_RESET);
-        setupSensors();
+        setupSensors(true);
         messageToLCD("SPC","Ready!");
-	delay(500);
+        Serial.begin(57600);
+        char buf[100];
+        label.toCharArray(buf,label.length()+1);
+        messageToLCD(buf,"");
+        delay(500);
     } else {
-	messageToLCD("WIFI","FAILED");
-	delay(5000);
+      messageToLCD("WIFI","FAILED");
+      delay(5000);
     }
   }
   
-  char buf[100];
-  label.toCharArray(buf,label.length()+1);
-  messageToLCD(buf,"");
-  delay(500);
-  //if( millis() - lastUpdate > 10000 ) { //every 10 second.
+ // delay(500);
+  if( millis() - lastUpdate > 12000 ) { //every 12 second.
       lastUpdate = millis();
-      if( updateWeight() == 1 ) {
-        sendUpdate(lastWeight);
-        delay(2000);
-      } //else Switch Off WIFI
-   // }
+      updateWeight();
+  }
+
 }
 
 void loopFirmata()
 {
   byte pin, analogPin;
 
+  /* DIGITALREAD - as fast as possible, check for changes and output them to the
+   * FTDI buffer using Serial.print()  */
+ // checkDigitalInputs();
+
   /* STREAMREAD - processing incoming messagse as soon as possible, while still
    * checking digital inputs.  */
   while (Firmata.available())
     Firmata.processInput();
   // TODO - ensure that Stream buffer doesn't go over 60 bytes
+
 
   currentMillis = millis();
   if (currentMillis - previousMillis > samplingInterval) {
@@ -943,13 +956,14 @@ void loopFirmata()
  */
 int updateWeight() {
   float newWeight = scale.get_units(); 
-
-  if ( lastWeight - newWeight < TOLLERANCE ) { //nothing is changed!
+  Serial.print("WEIGHT: ");
+  Serial.println(newWeight);
+  if ( (int)lastWeight == (int)newWeight ) { //nothing is changed!
     return 0;
   }
-  messageToLCD("New Weight","Found");
-  delay(3000);
+
   lastWeight = newWeight;
+  sendUpdate(newWeight);
   return 1;
 }
 
@@ -958,9 +972,7 @@ int updateWeight() {
  * send the weight of the device.
  * */
 void sendUpdate(int weight) {
-  int result = 1;
-  makeRequest("sendUpdate?weight="+String(weight)+"&macAddr="+macAddress);
- delay(2000);
+  int result = makeRequest("sendUpdate?weight="+String(weight)+"&macAddr="+macAddress);
   if( result==1 ) {
     digitalWrite(warningLedPin,HIGH); 
   } else {
@@ -972,44 +984,54 @@ void sendUpdate(int weight) {
  * Common code for requests
  * Not good for long response.. because it use buffering!
  */
-String makeRequest(String endpoint) {
-  String result = "TODO REQUEST";
-  messageToLCD("Sending","request");
+int makeRequest(String endpoint) {
+
+
   if (client.connect(server, serverPort)) { 
        client.println("GET /"+endpoint+" HTTP/1.1"); 
        client.println("Host: "+String(server));
        client.println("Connection: close");
        client.println();
-  } 
+       Serial.println("Request sent");
 
-  String buf;
+  } else {
+    Serial.println("Request failed");
+    return -1;
+  }
+
+  String bufff("");
   /*Parsing http response here.
-   * I discard headers line.. checking the ones that contains "HTTP" or ":"..
-   * So the header data doesn't have to contains this 2 string: "HTTP" ":"
+   * I discard headers line.. checking the ones that contains "\n" and ":"..
+   * So the data response doesn't have to contains this 2 string: "\n" ":"
    * It is not a good implementation.. it is "enough" for the project.
    */
+  delay(1000);
   while (client.available()) {
     char c = client.read();
-    buf = buf + c; // BUFFERING!
-    //parsing response.. not bug free sorry...
-    if( buf.indexOf("\n")!=-1 ) //checking everyline 
-      if( buf.indexOf("HTTP")!=-1 || buf.indexOf(":")!=1 ) 
-        buf = "";
+    bufff = bufff + c; // BUFFERING!
+    if( bufff.indexOf(":")!=-1 && bufff.indexOf("\n")!=-1)
+      bufff = "";
+    Serial.print(c);
   }
 
-  delay(100);
-
-  if (!client.connected()) {
+  if (bufff.length()>0)
+    client.flush(); //FUNDAMENTAL!
+  
+  
+  if (!client.connected()) {    
     client.stop(); 
   }
-  messageToLCD("Request","Done");
-  return result;
+
+
+    if(bufff.indexOf("ALARM")!=-1) {//ALARM ON!
+      Serial.println("ALARM FOUND");
+      return 1;
+    }
+    Serial.println("NO ALARM");
+    return 0;
+
 }
 
-
-/*
-* Setup wifi code
-*/
 int setupWifi(){
   if( wifi_ssid_str.length() == 0 || wifi_pwd_str.length() == 0 || 
     wifi_ssid_str.length() > 30 || wifi_pwd_str.length() > 30 ) {
