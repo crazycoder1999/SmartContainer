@@ -115,9 +115,11 @@ def sendUpdate():
 		updateContainer(db,macAddr,'weight',weight);
 		db.close();	
 		if int(weight) >= int(devThreshold):#no alarm
+			print "ALARM OFF";
 			return "0";
-		else:			  #alarm on
-			return "1";
+		else:			  
+			print "alarm ON";
+			return "ALARM";
 	db.close();
 	return "-1";
 
